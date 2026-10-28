@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 96" role="img" aria-label="LT Coach — Football Performance">
+  <g>
+    <path d="M6 16h10v50h22v10H6V16z" fill="#F5F2EB"/>
+    <path d="M46 16h34v10h-12v50h-10V26H46V16z" fill="#F5F2EB"/>
+    <rect x="90" y="16" width="3" height="60" fill="#B58C48"/>
+  </g>
+  <g font-family="'Big Shoulders Display', 'Arial Narrow', sans-serif" font-weight="800">
+    <text x="110" y="52" fill="#F5F2EB" font-size="44" letter-spacing="1">LT COACH</text>
+    <text x="112" y="76" fill="#B58C48" font-size="17" letter-spacing="4.3">FOOTBALL PERFORMANCE</text>
+  </g>
+</svg>
