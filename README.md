@@ -1,6 +1,6 @@
 # LT COACH — Football Performance
 
-Site statique de la marque **LT COACH — Football Performance** : deux parcours,
+Site statique de la marque **LT COACH — Football Performance** : trois parcours,
 deux formulaires de qualification, aucun paiement en ligne.
 
 ## Lancer le site
@@ -64,7 +64,7 @@ des autorisations : accord du joueur et, pour les mineurs, de sa famille.
 
 ## Périmètre respecté
 
-- Deux offres distinctes, deux parcours et deux formulaires.
+- Trois parcours distincts (académie, séances individuelles, Premium Performance sur appel) et deux formulaires.
 - Tarifs académie affichés : 30 € la séance, 100 €/mois (1×/semaine),
   180 €/mois (2×/semaine).
 - **Aucun tarif premium**, aucun pack, aucun paiement ou panier.

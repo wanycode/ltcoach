@@ -660,8 +660,8 @@ body.no-scroll { overflow: hidden; }
 
 .gateway-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(0.9rem, 1.6vw, 1.4rem);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: clamp(0.8rem, 1.3vw, 1.2rem);
 }
 .gateway {
   position: relative;
@@ -696,9 +696,10 @@ body.no-scroll { overflow: hidden; }
   color: var(--on-paper-faint);
 }
 .gateway-title {
-  margin-top: clamp(2.4rem, 5vw, 3.6rem);
-  font-size: clamp(2.2rem, 4vw, 3.3rem);
-  line-height: 0.9;
+  margin-top: clamp(2.2rem, 4vw, 3.2rem);
+  font-size: clamp(1.7rem, 2.6vw, 2.35rem);
+  line-height: 0.92;
+  overflow-wrap: break-word;
 }
 .gateway-sub {
   margin-top: 0.7rem;
@@ -770,6 +771,21 @@ body.no-scroll { overflow: hidden; }
   border-radius: 50%;
   pointer-events: none;
 }
+
+/* Troisième parcours : le suivi sur mesure, réservé à l'appel */
+.gateway--call {
+  background:
+    radial-gradient(120% 90% at 100% 0%, rgba(193, 154, 85, 0.16), transparent 62%),
+    var(--paper);
+  border-color: rgba(193, 154, 85, 0.42);
+}
+.gateway--call:hover {
+  border-color: rgba(116, 85, 31, 0.6);
+  background:
+    radial-gradient(120% 90% at 100% 0%, rgba(193, 154, 85, 0.24), transparent 64%),
+    var(--paper);
+}
+.gateway--call .gateway-title { font-size: clamp(1.7rem, 2.6vw, 2.35rem); }
 
 /* 8. QUALITIES ------------------------------------------------------------- */
 
@@ -2739,8 +2755,8 @@ p { text-wrap: pretty; }
 
 .cta-gates {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(0.9rem, 1.5vw, 1.3rem);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: clamp(0.8rem, 1.3vw, 1.2rem);
 }
 
 .cta-gate {
@@ -3068,11 +3084,16 @@ p { text-wrap: pretty; }
 
 .hero-paths {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.65rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
   margin-top: clamp(1.7rem, 2.6vw, 2.3rem);
-  max-width: 560px;
+  max-width: 640px;
 }
+.hero-path[href$="#candidature"] {
+  border-color: rgba(193, 154, 85, 0.42);
+  background: rgba(193, 154, 85, 0.07);
+}
+.hero-path .hp-name { font-size: clamp(1rem, 1.5vw, 1.25rem); }
 .hero-path {
   display: flex;
   flex-direction: column;
