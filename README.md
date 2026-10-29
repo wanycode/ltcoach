@@ -130,19 +130,22 @@ message envoyé par le visiteur.
 
 ## À compléter / valider avant mise en ligne
 
-1. **Coordonnées** : aucune coordonnée directe n'est affichée. Si LT COACH
-   souhaite publier un téléphone, un e-mail ou un compte social, il faudra les
-   ajouter dans les pages et dans les mentions légales (contact du responsable
-   de traitement).
-2. **Mentions légales** : SIRET, adresse professionnelle et coordonnées de
-   l'hébergeur sont marqués « à compléter ». La durée de conservation de douze
-   mois indiquée dans la politique de confidentialité est une valeur par défaut
-   à valider avec le responsable de traitement.
+1. ~~Coordonnées~~ — fait : Lucien TALON (Lucho), 07 83 63 66 91,
+   ltcoach.contact@gmail.com et @lt_coach_foot sont affichés sur les pages,
+   dans les formulaires et dans les mentions légales.
+2. **Mentions légales** : il ne reste que le **numéro SIRET** et l'adresse
+   professionnelle à ajouter. L'hébergeur est renseigné (GitHub Pages). La
+   durée de conservation de douze mois indiquée dans la politique de
+   confidentialité reste une valeur par défaut à valider.
 3. **Académie** : jours, horaires, lieux et groupes définitifs ; conditions de
    vacances scolaires, mois à cinq semaines, absences, rattrapages, résiliation
    et paiement (encore non publiées, un renvoi vers l'échange est affiché).
-4. **Coach** : parcours détaillé, diplômes et certifications (aujourd'hui
-   « communiqués sur demande »), bio et chiffres vérifiés.
+   Les tarifs académie (30 € la séance, 100 € et 180 € par mois) sont bien
+   presentés comme des **séances en petit groupe** ; l'individuel est à 65 € la
+   séance et 240 € par mois (section `#tarifs` de `premium.html`).
+4. ~~Diplômes~~ — fait : BPJEPS, diplôme de préparateur physique et 10 ans
+   d'expérience (page coach et accueil). Reste à valider la formulation de la
+   bio si le coach souhaite la détailler.
 5. **Preuves** : les quatorze retours de joueurs sont en ligne dans la galerie
    premium (`#references`). Il faut archiver les autorisations écrites
    correspondantes (joueur, famille si mineur, et club pour un club nommé) et
