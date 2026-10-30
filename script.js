@@ -22,13 +22,65 @@
      fournit un alias (suite de lettres et de chiffres). Remplacer recipient
      par cet alias évite d'exposer l'adresse en clair dans le code public. */
   var FORM_ENDPOINT = {
-    recipient: "ytop2sinj@gmail.com",
+    recipient: "ltcoach.contact@gmail.com",
     subject: "Nouvelle réponse au questionnaire – LT COACH",
     timeout: 20000
   };
 
   function formEndpointUrl() {
     return "https://formsubmit.co/ajax/" + encodeURIComponent(FORM_ENDPOINT.recipient);
+  }
+
+  /* Repli sans AJAX : certains navigateurs (notamment les navigateurs
+     intégrés des applications mobiles) bloquent la requête de l'envoi
+     direct. Le formulaire peut alors partir en POST classique, que tous les
+     navigateurs acceptent, puis FormSubmit renvoie le visiteur ici. */
+  function formPostUrl() {
+    return "https://formsubmit.co/" + encodeURIComponent(FORM_ENDPOINT.recipient);
+  }
+
+  function nativeReturnUrl() {
+    var hash = window.location.hash && window.location.hash !== "#" ? window.location.hash : "#demande";
+    return window.location.origin + window.location.pathname + "?envoi=ok" + hash;
+  }
+
+  function addHiddenField(form, name, value) {
+    if (form.querySelector('input[name="' + name + '"]')) return;
+    var input = document.createElement("input");
+    input.type = "hidden";
+    input.name = name;
+    input.value = value;
+    form.appendChild(input);
+  }
+
+  /* Le formulaire reste fonctionnel même sans JavaScript : il pointe vers
+     FormSubmit et revient sur la page, qui affiche la confirmation. */
+  function prepareNativeSubmit(form) {
+    form.setAttribute("action", formPostUrl());
+    form.setAttribute("method", "post");
+    addHiddenField(form, "_subject", FORM_ENDPOINT.subject);
+    addHiddenField(form, "_template", "table");
+    addHiddenField(form, "_captcha", "false");
+    addHiddenField(form, "_next", nativeReturnUrl());
+  }
+
+  /* Envoi en POST classique : on remplace les réponses par leurs intitulés
+     lisibles, identiques à ceux de l'e-mail reçu d'habitude. */
+  function submitNatively(form) {
+    if (typeof form.submit !== "function") return false;
+
+    var payload = buildPayload(form);
+    form.querySelectorAll("input, select, textarea").forEach(function (field) {
+      if (!field.name || field.name.charAt(0) === "_") return;
+      field.disabled = true;
+    });
+
+    Object.keys(payload).forEach(function (key) {
+      addHiddenField(form, key, String(payload[key]));
+    });
+
+    form.submit();
+    return true;
   }
 
   /* Mesure d'audience : renseigner le fournisseur et l'identifiant pour
@@ -591,6 +643,15 @@
     }
   }
 
+  /* Vrai quand la requête n'a jamais reçu de réponse (et non quand le
+     service a répondu par une erreur). L'envoi peut alors encore aboutir
+     par le POST classique. */
+  function isRequestBlocked(error) {
+    if (!error || error.name !== "TypeError") return false;
+    if (typeof navigator !== "undefined" && navigator.onLine === false) return false;
+    return true;
+  }
+
   function isValidEmail(value) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value);
   }
@@ -678,6 +739,8 @@
       var copyStatus = panel ? panel.querySelector(".copy-status") : null;
       var copyTimer = null;
       var started = false;
+
+      prepareNativeSubmit(form);
 
       if (copyButton) {
         copyButton.addEventListener("click", function () {
@@ -856,6 +919,10 @@
           })
           .catch(function (error) {
             if (timer) window.clearTimeout(timer);
+            /* Requête bloquée avant toute réponse (navigateur intégré, CORS,
+               extension) : l'envoi direct est impossible depuis ce
+               navigateur, on repasse par un POST classique. */
+            if (isRequestBlocked(error) && submitNatively(form)) return;
             sendFailed(error);
           });
       });
@@ -877,6 +944,32 @@
           form.scrollIntoView({ behavior: "smooth", block: "start" });
         });
       }
+
+      /* Retour depuis FormSubmit après un envoi en POST classique : le
+         service n'a renvoyé le visiteur ici que si la demande est passée. */
+      function showReturnedSuccess() {
+        if (window.location.search.indexOf("envoi=ok") === -1 || !success) return false;
+
+        var heading = success.querySelector("h3");
+        var intro = success.querySelector("p");
+        if (heading) heading.textContent = "Demande envoyée.";
+        if (intro) {
+          intro.textContent =
+            "Votre demande a bien été transmise à Lucien TALON. Il vous recontacte personnellement pour convenir de la suite.";
+        }
+        panel.querySelectorAll(".copy-label, [data-copy-summary-text], [data-copy-summary], .copy-status").forEach(function (node) {
+          node.hidden = true;
+        });
+
+        form.hidden = true;
+        success.hidden = false;
+        try {
+          window.history.replaceState(null, "", window.location.pathname + "#demande");
+        } catch (e) { /* URL historique indisponible : sans conséquence */ }
+        return true;
+      }
+
+      showReturnedSuccess();
     });
   }
 

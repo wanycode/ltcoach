@@ -137,6 +137,18 @@ Tant que l'activation n'est pas faite, FormSubmit répond « This form needs
 Activation » : le site affiche le message d'échec et les coordonnées directes,
 sans jamais faire croire à un envoi réussi.
 
+L'activation vaut pour une **adresse et un domaine** donnés : un envoi depuis
+`127.0.0.1` (aperçu local) est toujours refusé, seul le site publié compte.
+
+### Repli si le navigateur bloque l'envoi direct
+
+Certains navigateurs mobiles (navigateurs intégrés d'Instagram, de Facebook,
+extensions) refusent la requête de l'envoi direct. Le formulaire reste alors
+fonctionnel : `script.js` lui donne une action `POST` vers FormSubmit et renvoie
+le visiteur sur la page avec `?envoi=ok`, qui affiche « Demande envoyée. ». Les
+réponses y sont envoyées avec leurs intitulés lisibles, comme dans l'e-mail
+habituel. Ce repli sert aussi si JavaScript est indisponible.
+
 ## Ce qui n'est volontairement pas inclus
 
 Conformément à la demande :
