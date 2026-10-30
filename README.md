@@ -1,7 +1,8 @@
 # LT COACH — Football Performance
 
-Site statique de la marque **LT COACH — Football Performance** : trois parcours,
-deux formulaires de qualification, aucun paiement en ligne.
+Site statique de la marque **LT COACH — Football Performance** : trois parcours
+(LT Académie, LT Individuel, LT Performance), trois formulaires de qualification,
+aucun paiement en ligne.
 
 ## Lancer le site
 
@@ -17,9 +18,10 @@ Puis ouvrir <http://localhost:3000>.
 
 | Fichier | Rôle |
 | --- | --- |
-| `index.html` | Accueil : promesse, deux accès, six qualités, méthode, coach, FAQ |
-| `academie.html` | LT Académie 8–17 ans : bénéfices, séance type, groupes, tarifs publics, formulaire |
-| `premium.html` | LT Premium Performance : positionnement, modalités, parcours, formulaire, aucun tarif |
+| `index.html` | Accueil : promesse, trois parcours, six qualités, méthode, coach, FAQ |
+| `academie.html` | LT Académie 8–17 ans : bénéfices, séance type, groupes, tarifs petit groupe, formulaire |
+| `individuel.html` | LT Individuel : positionnement, modalités, tarifs (65 € / 240 €), formulaire de demande |
+| `performance.html` | LT Performance : huit prestations, déplacements, formulaire, aucun tarif (proposition après appel) |
 | `a-propos.html` | Parcours, approche terrain, valeurs |
 | `mentions-legales.html` | Informations légales |
 | `politique-confidentialite.html` | RGPD, mineurs, cookies, formulaires |
@@ -29,7 +31,7 @@ Puis ouvrir <http://localhost:3000>.
 ## Images
 
 Tout est à la racine du projet, sans sous-dossier, et le dossier ne contient que
-ce que le site charge : **36 fichiers pour 3,9 Mo**, le plus gros faisant 390 Ko.
+ce que le site charge : **37 fichiers pour 4,0 Mo**, le plus gros faisant 390 Ko.
 
 Les photos d'origine (`a1.PNG` … `a14.PNG`, `coach.PNG`, `coach2.PNG`,
 `coaching.JPG`, `logo1.PNG`, `logo2.PNG`, 58 Mo au total) ont été sorties du
@@ -47,10 +49,10 @@ erreur.
 | `web-coach.jpg` | Portrait du coach : hero de l'accueil, page « Le coach », image de partage (`og:image`) |
 | `web-coach2.jpg` | Coach avec un bilan hebdomadaire : section « Le coach » de l'accueil |
 | `web-coaching.jpg` | Séance sur le terrain : page Académie, section « Une séance type » |
-| `web-a1.jpg` … `web-a14.jpg` | Retours de joueurs : galerie de la page Premium (`#references`) |
+| `web-a1.jpg` … `web-a14.jpg` | Retours de joueurs : galerie de la page Individuel (`#references`) |
 | `logo-mark.png` | Emblème détouré, dans l'en-tête et le pied de page |
 | `web-logo1.png` | Logo complet « Vitesse · Explosivité · Performance », signature de la page coach |
-| `web-logo2.png` | Logo « Trainer », sceau de l'en-tête premium |
+| `web-logo2.png` | Logo « Trainer », sceau des pages Individuel et Performance |
 
 Pour remplacer une photo : déposer le nouvel original à la racine, puis
 régénérer la version web avec, par exemple :
@@ -64,10 +66,13 @@ des autorisations : accord du joueur et, pour les mineurs, de sa famille.
 
 ## Périmètre respecté
 
-- Trois parcours distincts (académie, séances individuelles, Premium Performance sur appel) et deux formulaires.
+- Trois parcours distincts, trois pages, trois formulaires : LT Académie,
+  LT Individuel, LT Performance.
 - Tarifs académie affichés : 30 € la séance, 100 €/mois (1×/semaine),
-  180 €/mois (2×/semaine).
-- **Aucun tarif premium**, aucun pack, aucun paiement ou panier.
+  180 €/mois (2×/semaine), pour des **séances en petit groupe**.
+- Tarifs individuels affichés : 65 € la séance, 240 €/mois (1×/semaine).
+- **Aucun tarif sur LT Performance** : proposition personnalisée après l'appel.
+  Aucun pack, aucun paiement, aucun panier.
 - Aucune réservation ferme : mention explicite dans chaque formulaire.
 - Consentement obligatoire, politique de confidentialité et mentions légales.
 - Récapitulatif copiable à la fin de chaque formulaire, pour un envoi par le canal
@@ -100,14 +105,11 @@ Tout est fait sans dépendance ni bibliothèque d'animation.
 
 ## Identité et coordonnées
 
-Le site ne publie **aucune identité personnelle ni coordonnée directe** : pas de
-nom de coach, pas de téléphone, pas d'e-mail, pas de compte Instagram ou
-WhatsApp. Tout passe par les deux formulaires. `mentions-legales.html` et
-`politique-confidentialite.html` désignent LT COACH comme éditeur et responsable
-de traitement, avec un renvoi vers le formulaire de demande.
-
-Pour réintroduire plus tard un nom ou des coordonnées, il suffit de les écrire
-dans les pages concernées (pied de page, page coach, mentions légales).
+Le site publie **Lucien TALON (Lucho)**, 07 83 63 66 91,
+ltcoach.contact@gmail.com et @lt_coach_foot : dans le pied de page, le menu
+mobile, la page coach, les formulaires et les pages légales.
+`mentions-legales.html` et `politique-confidentialite.html` désignent LT COACH
+comme éditeur et responsable de traitement.
 
 ## Ce qui n'est volontairement pas inclus
 
@@ -142,12 +144,12 @@ message envoyé par le visiteur.
    et paiement (encore non publiées, un renvoi vers l'échange est affiché).
    Les tarifs académie (30 € la séance, 100 € et 180 € par mois) sont bien
    presentés comme des **séances en petit groupe** ; l'individuel est à 65 € la
-   séance et 240 € par mois (section `#tarifs` de `premium.html`).
+   séance et 240 € par mois (section `#tarifs` de `individuel.html`).
 4. ~~Diplômes~~ — fait : BPJEPS, diplôme de préparateur physique et 10 ans
    d'expérience (page coach et accueil). Reste à valider la formulation de la
    bio si le coach souhaite la détailler.
 5. **Preuves** : les quatorze retours de joueurs sont en ligne dans la galerie
-   premium (`#references`). Il faut archiver les autorisations écrites
+   Individuel (`#references`). Il faut archiver les autorisations écrites
    correspondantes (joueur, famille si mineur, et club pour un club nommé) et
    vérifier les intitulés affichés par les visuels : U19 National, U18 R1,
    U17 R1, Senior R1/R2, NJCAA D2, Maccabi Tel-Aviv, Girondins de Bordeaux.
@@ -191,12 +193,12 @@ de consentement reste masqué. Dès qu'un fournisseur est configuré :
 - Animations vérifiées dans Chromium : dessin du terrain, révélations au scroll,
   bandeau défilant, rail de sections, barre de progression, copie des réponses
   toujours fonctionnelle ; aucune erreur console.
-- Formulaires testés (académie et premium) : champs requis, validation, panneau
+- Formulaires testés (académie, individuel et performance) : champs requis, validation, panneau
   de récapitulatif, bouton « Copier les réponses » (libellé et message de
   confirmation), restauration du formulaire.
 - La citation « On ne prépare pas un joueur pour un test… » tient sur une seule
   ligne à toutes les largeurs testées (taille ajustée automatiquement).
-- Aucun prix ni montant en euros dans le HTML public de la page premium.
+- Aucun prix ni montant en euros dans le HTML public de la page Performance.
 
 L'anti-spam côté serveur n'a pas d'objet pour l'instant : aucun formulaire n'est
 posté sur le site. Il devra être ajouté (honeypot + limitation de débit) avec le
