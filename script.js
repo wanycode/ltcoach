@@ -2,8 +2,9 @@
    LT COACH — FOOTBALL PERFORMANCE
    Interactions, validation des formulaires et mesure d'audience.
 
-   Aucun serveur, aucune base de données : les demandes sont composées dans
-   la messagerie du visiteur (mailto) ou transmises via WhatsApp.
+   Le site est statique (GitHub Pages) : les demandes sont envoyées depuis le
+   navigateur à FormSubmit, qui les transmet par e-mail au coach. Aucun
+   serveur, aucune base de données, aucun stockage côté site.
    ========================================================================== */
 
 (function () {
@@ -13,8 +14,22 @@
   /* 1. Configuration                                                       */
   /* --------------------------------------------------------------------- */
 
-  /* Aucune coordonnée n'est publiée : à la validation, le site affiche un
-     récapitulatif que le visiteur copie pour l'envoyer lui-même au coach. */
+  /* Envoi des formulaires : FormSubmit (https://formsubmit.co), service conçu
+     pour les sites statiques. L'appel AJAX évite de quitter la page.
+
+     Le destinataire est centralisé ici. Au premier envoi, FormSubmit adresse
+     un e-mail d'activation à cette adresse : le lien active le formulaire et
+     fournit un alias (suite de lettres et de chiffres). Remplacer recipient
+     par cet alias évite d'exposer l'adresse en clair dans le code public. */
+  var FORM_ENDPOINT = {
+    recipient: "ytop2sinj@gmail.com",
+    subject: "Nouvelle réponse au questionnaire – LT COACH",
+    timeout: 20000
+  };
+
+  function formEndpointUrl() {
+    return "https://formsubmit.co/ajax/" + encodeURIComponent(FORM_ENDPOINT.recipient);
+  }
 
   /* Mesure d'audience : renseigner le fournisseur et l'identifiant pour
      activer le suivi. Tant que provider vaut null, aucun script tiers n'est
@@ -462,6 +477,87 @@
     return lines.join("\n");
   }
 
+  /* Adresse e-mail du visiteur, utilisée comme Reply-To de l'e-mail reçu. */
+  function visitorEmail(form) {
+    var found = "";
+    form.querySelectorAll('input[type="email"]').forEach(function (field) {
+      if (!found && isValidEmail(cleanText(field.value))) found = cleanText(field.value);
+    });
+    return found;
+  }
+
+  function formatSubmissionDate(date) {
+    try {
+      return new Intl.DateTimeFormat("fr-FR", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        timeZoneName: "short"
+      }).format(date);
+    } catch (e) {
+      return date.toLocaleString("fr-FR");
+    }
+  }
+
+  /* Toutes les réponses du questionnaire, avec la section en préfixe et
+     l'intitulé exact affiché à l'écran. Aucun champ rempli n'est omis. */
+  function buildPayload(form) {
+    var payload = {
+      _subject: FORM_ENDPOINT.subject,
+      _template: "table",
+      _captcha: "false",
+      "Date et heure de l'envoi": formatSubmissionDate(new Date()),
+      "Parcours": form.getAttribute("data-parcours-name") || "",
+      "Page d'origine": window.location.pathname
+    };
+
+    var replyTo = visitorEmail(form);
+    if (replyTo) payload._replyto = replyTo;
+
+    var legend = "";
+    var seenRadios = {};
+
+    function push(label, value) {
+      var key = label;
+      var index = 2;
+      while (Object.prototype.hasOwnProperty.call(payload, key)) {
+        key = label + " (" + index + ")";
+        index += 1;
+      }
+      payload[key] = value;
+    }
+
+    form.querySelectorAll("input, select, textarea").forEach(function (field) {
+      if (field.disabled) return;
+      if (field.type === "hidden" || field.type === "submit" || field.type === "button") return;
+
+      if (field.type === "radio") {
+        if (!field.checked || seenRadios[field.name]) return;
+        seenRadios[field.name] = true;
+      }
+
+      if (field.type === "checkbox") {
+        if (field.checked) push("Consentement", "Oui — politique de confidentialité acceptée");
+        return;
+      }
+
+      var value = cleanText(formatValue(field));
+      if (!value) return;
+
+      var fieldset = field.closest("fieldset");
+      if (fieldset && fieldset.querySelector("legend")) {
+        legend = cleanText(fieldset.querySelector("legend").textContent);
+      }
+
+      push((legend ? legend + " — " : "") + labelForField(form, field), value);
+    });
+
+    return payload;
+  }
+
   function selectSummary(area) {
     try {
       area.focus({ preventScroll: true });
@@ -636,8 +732,66 @@
         });
       });
 
+      var submitButton = form.querySelector('button[type="submit"]');
+      var sending = false;
+
+      /* Pendant l'envoi, le bouton est désactivé : impossible de valider
+         deux fois la même demande. */
+      function setSending(state) {
+        sending = state;
+        form.setAttribute("aria-busy", state ? "true" : "false");
+        if (!submitButton) return;
+        submitButton.disabled = state;
+        if (state) {
+          if (!submitButton.hasAttribute("data-label")) {
+            submitButton.setAttribute("data-label", submitButton.innerHTML);
+          }
+          submitButton.textContent = "Envoi en cours…";
+        } else if (submitButton.hasAttribute("data-label")) {
+          submitButton.innerHTML = submitButton.getAttribute("data-label");
+        }
+      }
+
+      function sendFailed(error) {
+        setSending(false);
+        if (window.console && console.warn) {
+          console.warn("[LT COACH] Envoi du formulaire impossible :", error);
+        }
+        track("form_error", { form: form.getAttribute("data-form-name") || form.id });
+        if (status) {
+          status.hidden = false;
+          status.textContent =
+            "L'envoi n'a pas abouti. Vos réponses sont conservées : vous pouvez " +
+            "réessayer dans un instant. Sinon, écrivez directement à Lucien TALON : " +
+            "07 83 63 66 91 (WhatsApp) ou ltcoach.contact@gmail.com.";
+        }
+      }
+
+      function sendSucceeded() {
+        setSending(false);
+        track("form_submit", {
+          form: form.getAttribute("data-form-name") || form.id,
+          parcours: form.getAttribute("data-parcours-name") || ""
+        });
+        form.hidden = true;
+        if (success) {
+          success.hidden = false;
+          if (copyButton) {
+            copyButton.textContent = "Copier les réponses";
+            copyButton.classList.remove("is-copied");
+          }
+          if (copyStatus) {
+            copyStatus.textContent = "";
+            copyStatus.classList.remove("is-error");
+          }
+          success.focus({ preventScroll: true });
+          success.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }
+
       form.addEventListener("submit", function (event) {
         event.preventDefault();
+        if (sending) return;
 
         var invalid = [];
         form.querySelectorAll("[required]").forEach(function (field) {
@@ -657,29 +811,53 @@
 
         if (status) status.hidden = true;
 
-        var body = composeMessage(form);
+        /* Le récapitulatif est composé avant l'envoi : il sert de copie de
+           secours si le réseau ou le service fait défaut. */
         var summaryArea = panel ? panel.querySelector("[data-copy-summary-text]") : null;
-        if (summaryArea) summaryArea.value = body;
+        if (summaryArea) summaryArea.value = composeMessage(form);
 
-        track("form_submit", {
-          form: form.getAttribute("data-form-name") || form.id,
-          parcours: form.getAttribute("data-parcours-name") || ""
-        });
-
-        form.hidden = true;
-        if (success) {
-          success.hidden = false;
-          if (copyButton) {
-            copyButton.textContent = "Copier les réponses";
-            copyButton.classList.remove("is-copied");
-          }
-          if (copyStatus) {
-            copyStatus.textContent = "";
-            copyStatus.classList.remove("is-error");
-          }
-          success.focus({ preventScroll: true });
-          success.scrollIntoView({ behavior: "smooth", block: "center" });
+        if (typeof window.fetch !== "function") {
+          sendFailed(new Error("fetch indisponible"));
+          return;
         }
+
+        var controller = typeof window.AbortController === "function" ? new AbortController() : null;
+        var timer = controller
+          ? window.setTimeout(function () { controller.abort(); }, FORM_ENDPOINT.timeout)
+          : null;
+
+        setSending(true);
+
+        window.fetch(formEndpointUrl(), {
+          method: "POST",
+          mode: "cors",
+          headers: { "Content-Type": "application/json", "Accept": "application/json" },
+          body: JSON.stringify(buildPayload(form)),
+          signal: controller ? controller.signal : undefined
+        })
+          .then(function (response) {
+            return response.text().then(function (text) {
+              var data = null;
+              try { data = JSON.parse(text); } catch (e) { data = null; }
+              if (!response.ok) {
+                throw new Error((data && data.message) || "HTTP " + response.status);
+              }
+              /* Seul un succès explicite de FormSubmit vaut confirmation :
+                 une réponse inattendue reste traitée comme un échec. */
+              if (!data || typeof data !== "object" || String(data.success).toLowerCase() !== "true") {
+                throw new Error((data && data.message) || "Réponse inattendue du service d'envoi");
+              }
+              return data;
+            });
+          })
+          .then(function () {
+            if (timer) window.clearTimeout(timer);
+            sendSucceeded();
+          })
+          .catch(function (error) {
+            if (timer) window.clearTimeout(timer);
+            sendFailed(error);
+          });
       });
 
       var reset = panel ? panel.querySelector("[data-form-reset]") : null;

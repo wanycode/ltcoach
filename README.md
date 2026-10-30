@@ -75,8 +75,8 @@ des autorisations : accord du joueur et, pour les mineurs, de sa famille.
   Aucun pack, aucun paiement, aucun panier.
 - Aucune réservation ferme : mention explicite dans chaque formulaire.
 - Consentement obligatoire, politique de confidentialité et mentions légales.
-- Récapitulatif copiable à la fin de chaque formulaire, pour un envoi par le canal
-  choisi par le visiteur.
+- Envoi direct de chaque formulaire par e-mail via FormSubmit, avec copie du
+  récapitulatif affichée en secours si l'envoi échoue.
 - Tracking prêt à l'emploi (clics CTA, formulaires, pages, source), conditionné
   au consentement.
 - Mobile first : navigation en tiroir, CTA unique fixe en bas d'écran, boutons et
@@ -111,24 +111,46 @@ mobile, la page coach, les formulaires et les pages légales.
 `mentions-legales.html` et `politique-confidentialite.html` désignent LT COACH
 comme éditeur et responsable de traitement.
 
+## Envoi des formulaires (FormSubmit)
+
+Les trois formulaires sont expédiés depuis le navigateur à
+[FormSubmit](https://formsubmit.co/), service prévu pour les sites statiques :
+aucun serveur, aucune base de données, aucun compte à créer pour le visiteur.
+La demande arrive dans la boîte **ltcoach.contact@gmail.com** avec toutes les
+réponses, la date et l'heure, le parcours et la page d'origine. L'adresse de la
+personne qui écrit est placée en `Reply-To` : il suffit de répondre à l'e-mail.
+
+L'adresse de réception est centralisée dans `script.js`
+(`FORM_ENDPOINT.recipient`), jamais répétée dans les pages.
+
+### Première mise en service — une seule fois
+
+1. Ouvrir le site, remplir un formulaire et valider.
+2. FormSubmit adresse alors un e-mail **« Activate Form »** à
+   ltcoach.contact@gmail.com : cliquer sur le lien qu'il contient.
+3. Renvoyer un formulaire : la demande arrive normalement dans la boîte.
+4. Facultatif : l'e-mail d'activation fournit aussi un **alias** (suite de
+   lettres et de chiffres). Remplacer `recipient` par cet alias évite
+   d'exposer l'adresse en clair dans le code public.
+
+Tant que l'activation n'est pas faite, FormSubmit répond « This form needs
+Activation » : le site affiche le message d'échec et les coordonnées directes,
+sans jamais faire croire à un envoi réussi.
+
 ## Ce qui n'est volontairement pas inclus
 
 Conformément à la demande :
 
-- **Aucune base de données** et aucun stockage serveur des demandes.
-- **Aucun envoi automatique** de la demande, aucune notification.
+- **Aucune base de données** et aucun stockage serveur des demandes : elles
+  n'existent que dans la boîte e-mail du coach.
 - Aucun back-office, aucune réservation, aucun paiement.
 
-Les formulaires valident les champs côté navigateur, puis affichent un
-**récapitulatif en texte** que le visiteur copie en un clic (bouton « Copier les
-réponses »). Il l'envoie ensuite lui-même au coach par le canal de son choix
-(message, DM, WhatsApp). Le site ne stocke rien : la demande n'existe que dans le
-message envoyé par le visiteur.
-
-> Pour brancher plus tard un vrai envoi serveur (Formspree, Worker, etc.), il
-> suffit d'ajouter un `fetch` vers l'endpoint choisi dans le gestionnaire
-> `submit` de `initForms()` (`script.js`) et de conserver le panneau de
-> confirmation existant. Le reste de l'interface est déjà prêt.
+Les formulaires valident les champs côté navigateur, envoient la demande à
+FormSubmit, puis n'affichent la confirmation qu'une fois la réponse positive du
+service. En cas d'échec (réseau coupé, service indisponible, formulaire non
+activé), les réponses restent dans le formulaire, un message explique quoi faire
+et le récapitulatif peut être copié pour être envoyé à la main. Le bouton est
+désactivé pendant l'envoi : aucune demande ne peut partir deux fois.
 
 ## À compléter / valider avant mise en ligne
 
@@ -139,7 +161,9 @@ message envoyé par le visiteur.
    professionnelle à ajouter. L'hébergeur est renseigné (GitHub Pages). La
    durée de conservation de douze mois indiquée dans la politique de
    confidentialité reste une valeur par défaut à valider.
-3. **Académie** : jours, horaires, lieux et groupes définitifs ; conditions de
+3. **FormSubmit** : activer le formulaire depuis l'e-mail « Activate Form »
+   reçu à la première demande (voir la section ci-dessus).
+4. **Académie** : jours, horaires, lieux et groupes définitifs ; conditions de
    vacances scolaires, mois à cinq semaines, absences, rattrapages, résiliation
    et paiement (encore non publiées, un renvoi vers l'échange est affiché).
    Les tarifs académie (30 € la séance, 100 € et 180 € par mois) sont bien
