@@ -3197,6 +3197,177 @@ p { text-wrap: pretty; }
 
 /* -- Grilles allégées (quatre blocs au lieu de six) ---------------------- */
 
+/* Accueil : composition typographique à retours maîtrisés. */
+.hero-title--home {
+  font-size: clamp(3rem, 7.2vw, 6.4rem);
+  line-height: 0.86;
+}
+.hero-title--home > span { white-space: nowrap; }
+
+/* LT Performance : une direction éditoriale dédiée, plus proche d'un dossier
+   de performance que d'une page d'offre standard. */
+.page-hero--performance {
+  padding-bottom: clamp(1.8rem, 3.2vw, 2.8rem);
+  background-color: #10100f;
+  background-image:
+    radial-gradient(75% 110% at 88% 38%, rgba(181, 140, 72, 0.13), transparent 65%),
+    linear-gradient(115deg, #10100f 0%, #171613 52%, #10100f 100%);
+}
+.page-hero--performance::before {
+  background-image: linear-gradient(to right, rgba(245, 242, 235, 0.035) 1px, transparent 1px);
+  background-size: 20% 100%;
+}
+.performance-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.96fr) minmax(0, 1.04fr);
+  gap: clamp(2.2rem, 5vw, 5rem);
+  align-items: center;
+}
+.performance-hero-copy { max-width: 650px; }
+.page-hero--performance .performance-title {
+  max-width: none;
+  font-size: clamp(3.6rem, 6.3vw, 6.4rem);
+  line-height: 0.86;
+  letter-spacing: -0.015em;
+}
+.performance-title .gold { color: var(--gold-bright); }
+.performance-hero-copy .lede {
+  max-width: 47ch;
+  margin-top: clamp(1.3rem, 2vw, 1.8rem);
+}
+.performance-hero-copy .actions {
+  align-items: center;
+  gap: 1.2rem 1.7rem;
+  margin-top: clamp(1.5rem, 2.5vw, 2.2rem);
+}
+.performance-hero-copy .btn {
+  min-height: 58px;
+  padding-inline: 1.55rem;
+  letter-spacing: 0.1em;
+}
+.performance-text-link {
+  display: inline-flex;
+  gap: 0.7rem;
+  align-items: center;
+  color: var(--on-ink-dim);
+  font-size: 0.84rem;
+  transition: color 0.2s ease;
+}
+.performance-text-link:hover { color: var(--gold-bright); }
+.performance-hero-visual {
+  position: relative;
+  min-width: 0;
+  padding: 0.7rem;
+  border: 1px solid rgba(201, 166, 104, 0.42);
+  background: rgba(245, 242, 235, 0.025);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.42);
+}
+.performance-hero-visual::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0.7rem;
+  border: 1px solid rgba(245, 242, 235, 0.12);
+  pointer-events: none;
+}
+.performance-hero-visual > img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1.28;
+  object-fit: cover;
+  object-position: 48% center;
+  filter: saturate(0.78) contrast(1.04);
+}
+.performance-hero-visual figcaption {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 0.65rem 0.35rem;
+  color: var(--paper);
+  font-family: var(--ff-display);
+  font-size: clamp(1.3rem, 2vw, 1.8rem);
+  line-height: 1;
+  text-transform: uppercase;
+}
+.performance-hero-visual figcaption small {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: var(--gold-bright);
+  font-family: var(--ff-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+}
+.performance-visual-mark {
+  flex: none;
+  color: var(--gold-bright);
+  font-family: var(--ff-display);
+  font-size: 2.7rem;
+  font-weight: 900;
+  line-height: 0.8;
+}
+.performance-visual-mark span { color: var(--paper); }
+.performance-visual-stamp {
+  position: absolute;
+  top: 1.4rem;
+  left: 1.4rem;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid rgba(245, 242, 235, 0.32);
+  background: rgba(16, 16, 15, 0.78);
+  color: var(--paper);
+  backdrop-filter: blur(10px);
+}
+.performance-visual-stamp .mono { font-size: 0.54rem; letter-spacing: 0.1em; }
+.performance-visual-stamp i { width: 3px; height: 3px; border-radius: 50%; background: var(--gold-bright); }
+.performance-hero-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  margin-top: clamp(2rem, 4vw, 3.6rem);
+  padding-top: 1rem;
+  border-top: 1px solid var(--line-ink);
+  color: var(--on-ink-faint);
+  font-family: var(--ff-mono);
+  font-size: 0.61rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.performance-hero-foot span:first-child { color: var(--gold-bright); }
+
+.performance-page > .section--tight.section--paper {
+  background: #171613;
+  color: var(--paper);
+}
+.performance-page > .section--tight .fact { border-color: rgba(245, 242, 235, 0.13); }
+.performance-page > .section--tight .fact strong { color: var(--gold-bright); }
+.performance-page > .section--tight .fact span { color: var(--on-ink-dim); }
+.performance-page #prestations {
+  background: #10100f;
+  color: var(--paper);
+}
+.performance-page #prestations .section-head .lede { color: var(--on-ink-dim); }
+.performance-page #prestations .prestations-grid {
+  background: rgba(201, 166, 104, 0.25);
+  border-color: rgba(201, 166, 104, 0.25);
+}
+.performance-page #prestations .prestation { background: #181715; }
+.performance-page #prestations .prestation h3 { color: var(--paper); }
+.performance-page #prestations .prestation p { color: var(--on-ink-dim); }
+.performance-page #prestations .prestation .num { color: var(--gold-bright); }
+.performance-page [aria-labelledby="performance-retours-titre"] {
+  background: #171613;
+  color: var(--paper);
+}
+.performance-page [aria-labelledby="performance-retours-titre"] .section-head .lede { color: var(--on-ink-dim); }
+.performance-page .featured-testimonials li {
+  border-color: rgba(201, 166, 104, 0.35);
+  background: #10100f;
+}
+
 .benefit-grid--four,
 .modality-grid--four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
@@ -3208,6 +3379,24 @@ p { text-wrap: pretty; }
   .benefit-grid--four,
   .modality-grid--four,
   .pricing-grid--two { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 900px) {
+  .performance-hero-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr); gap: 1.5rem; }
+  .page-hero--performance .performance-title { font-size: clamp(3.3rem, 7vw, 5rem); }
+}
+@media (max-width: 760px) {
+  .performance-hero-grid { grid-template-columns: 1fr; }
+  .performance-hero-copy { max-width: 620px; }
+  .performance-hero-visual { width: min(100%, 650px); margin-inline: auto; }
+}
+@media (max-width: 640px) {
+  .hero-title--home { font-size: clamp(2.35rem, 10vw, 3.45rem); line-height: 0.9; }
+  .page-hero--performance .performance-title { font-size: clamp(2.65rem, 11vw, 3.8rem); }
+  .performance-hero-copy .actions { align-items: stretch; }
+  .performance-text-link { justify-content: center; min-height: 44px; }
+  .performance-hero-foot { flex-direction: column; gap: 0.65rem; font-size: 0.56rem; }
+  .performance-visual-stamp { top: 1rem; left: 1rem; }
 }
 
 /* -- LT Performance : grille des prestations --------------------------- */
@@ -3237,6 +3426,21 @@ p { text-wrap: pretty; }
   margin-bottom: 0.5rem;
 }
 .prestation p { font-size: 0.88rem; color: var(--on-paper-dim); }
+
+.featured-testimonials {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(0.8rem, 2vw, 1.4rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.featured-testimonials li { min-width: 0; overflow: hidden; background: var(--paper); border: 1px solid var(--line-paper); }
+.featured-testimonials img { display: block; width: 100%; height: auto; }
+@media (max-width: 640px) {
+  .featured-testimonials { grid-template-columns: 1fr; }
+  .featured-testimonials li { max-width: 420px; margin-inline: auto; }
+}
 
 @media (max-width: 1080px) {
   .prestations-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
